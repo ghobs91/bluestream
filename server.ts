@@ -47,16 +47,16 @@ function uriToPostLink(uri: string, usePsky: boolean) {
   }`;
 }
 function genTitle(author: ProfileViewDetailed, feed: FeedViewPost) {
-  const { handle } = author;
+  const { displayName, handle, avatar } = author;
   const { post, reason, reply } = feed;
   if (reason && reason["$type"] === BSKY_TYPES.repost) {
-    return `Repost by ${handle}, original by ${post.author.handle}`;
+    return `Repost by ${displayName} (${handle}), original by  ${post.author.displayName} (${post.author.handle})`;
   }
-  let title = `Post by ${handle}`;
+  let title = `${displayName}:`;
   if (reply) {
-    title = `${title}, reply to ${
+    title = `${title} (reply to @${
       actors[getDidFromUri(reply.parent.uri)].handle
-    }`;
+    })`;
   }
   if (post.embed && post.embed["$type"] === BSKY_TYPES.view) {
     title = `${title}, quoting ${post.embed.record!.author.handle}`;
@@ -146,7 +146,7 @@ serve(async (request: Request) => {
     });
   }
 
-  const { did, handle } = await getActor(pathname.replace(/^\//, ""));
+  const { did, handle, displayName, avatar } = await getActor(pathname.replace(/^\//, ""));
   if (did === "") {
     return new Response("Unable to resolve handle", {
       headers: { "content-type": "text/plain" },
@@ -197,12 +197,16 @@ serve(async (request: Request) => {
         sanitize(href)
       }" rel="self" type="application/rss+xml" />`,
       tag("link", `https://staging.bsky.app/profile/${did}`),
-      tag("description", `${handle}'s posts in ${service}`),
+
+      tag("description", `${displayName} (${handle}) in ${service}`),
+      tag("image", 
+        tag("url", `${avatar}`)
+      ),
       tag("lastBuildDate", feeds.at(0)?.post.record.createdAt || ""),
       ...feeds.map(({ post, reason, reply }) =>
         tag(
           "item",
-          tag("title", genTitle({ did, handle }, { post, reason, reply })),
+          tag("title", genTitle({ did, handle, displayName }, { post, reason, reply })),
           tag("description", ...genMainContent(post, usePsky, includeRepost)),
           ...(post.embed?.images || []).map((image) =>
             `<enclosure type="image/jpeg" length="0" url="${image.thumb}"/>`
