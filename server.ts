@@ -54,9 +54,9 @@ function genTitle(author: ProfileViewDetailed, feed: FeedViewPost) {
   }
   let title = `${displayName}:`;
   if (reply) {
-    title = `${title}, reply to @${
+    title = `(reply to @${
       actors[getDidFromUri(reply.parent.uri)].handle
-    }`;
+    })`;
   }
   if (post.embed && post.embed["$type"] === BSKY_TYPES.view) {
     title = `${title}, quoting ${post.embed.record!.author?.handle}`;
