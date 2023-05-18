@@ -32,6 +32,18 @@
         <input id="input-handle" name="input-handle" aria-label="input-handle" required autofocus placeholder="xxx.bsky.social" />
         <input type="submit" id="submit-button" name="submit-button" aria-label="submit-button" value="Generate feed" />
       </div>
+      <div>
+        <div>
+          <label>
+            <input type="checkbox" id="include-repost" name="include-repost" aria-label="include-repost" /> include raw repost (quote repost is always included)
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" id="link-psky" name="link-psky" aria-label="link-psky" /> Use psky.app for link (EXPERIMENTAL, this is useful for embed)
+          </label>
+        </div>
+      </div>
     </form>
     <p>You can use DID (like <code>did:plc:xxxx</code>) instead of handle.</p>
     <p>Currently only posts in bsky.social is supported.</p>
