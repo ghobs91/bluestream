@@ -47,14 +47,14 @@ function uriToPostLink(uri: string, usePsky: boolean) {
   }`;
 }
 function genTitle(author: ProfileViewDetailed, feed: FeedViewPost) {
-  const { displayName, handle, avatar } = author;
+  const { handle } = author;
   const { post, reason, reply } = feed;
   if (reason && reason["$type"] === BSKY_TYPES.repost) {
-    return `Repost by ${displayName} (${handle}), original by  ${post.author.displayName} (${post.author.handle})`;
+    return `Repost by ${handle}, original by ${post.author.handle}`;
   }
-  let title = `${displayName}:`;
+  let title = `Post by ${handle}`;
   if (reply) {
-    title = `${title}, reply to @${
+    title = `${title}, reply to ${
       actors[getDidFromUri(reply.parent.uri)].handle
     }`;
   }
@@ -146,7 +146,7 @@ serve(async (request: Request) => {
     });
   }
 
-  const { did, handle, displayName, avatar } = await getActor(pathname.replace(/^\//, ""));
+  const { did, handle } = await getActor(pathname.replace(/^\//, ""));
   if (did === "") {
     return new Response("Unable to resolve handle", {
       headers: { "content-type": "text/plain" },
@@ -197,12 +197,12 @@ serve(async (request: Request) => {
         sanitize(href)
       }" rel="self" type="application/rss+xml" />`,
       tag("link", `https://staging.bsky.app/profile/${did}`),
-      tag("description", `${displayName} (${handle}) in ${service}`),
+      tag("description", `${handle}'s posts in ${service}`),
       tag("lastBuildDate", feeds.at(0)?.post.record.createdAt || ""),
       ...feeds.map(({ post, reason, reply }) =>
         tag(
           "item",
-          tag("title", genTitle({ did, handle, displayName }, { post, reason, reply })),
+          tag("title", genTitle({ did, handle }, { post, reason, reply })),
           tag("description", ...genMainContent(post, usePsky, includeRepost)),
           ...(post.embed?.images || []).map((image) =>
             `<enclosure type="image/jpeg" length="0" url="${image.thumb}"/>`
