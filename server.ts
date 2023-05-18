@@ -204,9 +204,6 @@ serve(async (request: Request) => {
       tag("link", `https://staging.bsky.app/profile/${did}`),
 
       tag("description", `${displayName} (${handle}) in ${service}`),
-      tag("image", 
-        tag("url", `${avatar}`)
-      ),
       tag("lastBuildDate", feeds.at(0)?.post.record.createdAt || ""),
       ...feeds.map(({ post, reason }) =>
         tag(
