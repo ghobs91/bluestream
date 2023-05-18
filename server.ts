@@ -49,26 +49,21 @@ function uriToPostLink(uri: string, usePsky: boolean) {
 function genTitle(author: ProfileViewDetailed, feed: FeedViewPost) {
   const { displayName, handle, avatar } = author;
   const { post, reason, reply } = feed;
-
-  if (post) {
-    if (reason && reason["$type"] === BSKY_TYPES.repost) {
-      return `Repost by ${displayName} (${handle}), original by  ${post.author.displayName} (${post.author.handle})`;
-    }
-    let title = `${displayName}:`;
-    if (reply) {
-      title = `${title} (reply to @${
-        actors[getDidFromUri(reply.parent.uri)].handle
-      })`;
-    }
-    if (post.embed && post.embed["$type"] === BSKY_TYPES.view) {
-      title = `${title}, quoting ${post.embed.record!.author.handle}`;
-    } else if (post.embed && post.embed["$type"] === BSKY_TYPES.recordWithMedia) {
-      title = `${title}, quoting ${post.embed.record!.record!.author.handle}`;
-    }
-    return title;
+  if (reason && reason["$type"] === BSKY_TYPES.repost) {
+    return `Repost by ${displayName} (${handle}), original by  ${post.author.displayName} (${post.author.handle})`;
   }
-  return;
-
+  let title = `${displayName}:`;
+  if (reply) {
+    title = `${title}, reply to @${
+      actors[getDidFromUri(reply.parent.uri)].handle
+    }`;
+  }
+  if (post.embed && post.embed["$type"] === BSKY_TYPES.view) {
+    title = `${title}, quoting ${post.embed.record!.author.handle}`;
+  } else if (post.embed && post.embed["$type"] === BSKY_TYPES.recordWithMedia) {
+    title = `${title}, quoting ${post.embed.record!.record!.author.handle}`;
+  }
+  return title;
 }
 function genMainContent(
   post: PostView,
@@ -202,13 +197,12 @@ serve(async (request: Request) => {
         sanitize(href)
       }" rel="self" type="application/rss+xml" />`,
       tag("link", `https://staging.bsky.app/profile/${did}`),
-
       tag("description", `${displayName} (${handle}) in ${service}`),
       tag("lastBuildDate", feeds.at(0)?.post.record.createdAt || ""),
-      ...feeds.map(({ post, reason }) =>
+      ...feeds.map(({ post, reason, reply }) =>
         tag(
           "item",
-          tag("title", genTitle({ did, handle, displayName }, { post, reason })),
+          tag("title", genTitle({ did, handle, displayName }, { post, reason, reply })),
           tag("description", ...genMainContent(post, usePsky, includeRepost)),
           ...(post.embed?.images || []).map((image) =>
             `<enclosure type="image/jpeg" length="0" url="${image.thumb}"/>`
