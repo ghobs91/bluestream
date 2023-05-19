@@ -53,11 +53,11 @@ function genTitle(author: ProfileViewDetailed, feed: FeedViewPost) {
     return `Repost by ${displayName} (${handle}), original by  ${post.author.displayName} (${post.author.handle})`;
   }
   let title = `${displayName}:`;
-  if (reply) {
-    title = `(reply to @${
-      actors[getDidFromUri(reply.parent.uri)].handle
-    })`;
-  }
+  // if (reply) {
+  //   title = `(reply to @${
+  //     actors[getDidFromUri(reply.parent.uri)].handle
+  //   })`;
+  // }
   if (post.embed && post.embed["$type"] === BSKY_TYPES.view) {
     title = `${title}, quoting ${post.embed.record!.author?.handle}`;
   } else if (post.embed && post.embed["$type"] === BSKY_TYPES.recordWithMedia) {
