@@ -38,7 +38,7 @@ function getDidFromUri(uri: string) {
   );
 }
 function uriToPostLink(uri: string, usePsky: boolean) {
-  const origin = usePsky ? "psky.app" : "staging.bsky.app";
+  const origin = usePsky ? "psky.app" : "bsky.app";
   return `https://${origin}/profile/${
     uri.replace(/^at:\/\//, "").replace(
       /app\.bsky\.feed\./,
@@ -196,7 +196,7 @@ serve(async (request: Request) => {
       `<atom:link href="${
         sanitize(href)
       }" rel="self" type="application/rss+xml" />`,
-      tag("link", `https://staging.bsky.app/profile/${did}`),
+      tag("link", `https://bsky.app/profile/${did}`),
       // tag("description", `${displayName} (${handle}) in ${service}`),
       tag("description", `${description}`),
       tag("image", 
