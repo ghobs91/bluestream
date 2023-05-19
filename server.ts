@@ -52,7 +52,7 @@ function genTitle(author: ProfileViewDetailed, feed: FeedViewPost) {
   if (reason && reason["$type"] === BSKY_TYPES.repost) {
     return `Repost by ${displayName} (${handle}), original by  ${post.author.displayName} (${post.author.handle})`;
   }
-  let title = `${displayName}:`;
+  let title = ``;
   if (reply) {
     title = `(reply to @${
       actors[getDidFromUri(reply.parent.uri)].handle
