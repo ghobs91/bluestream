@@ -47,7 +47,7 @@ function uriToPostLink(uri: string, usePsky: boolean) {
   }`;
 }
 function genTitle(author: ProfileViewDetailed, feed: FeedViewPost) {
-  const { handle, displayName, avatar } = author;
+  const { handle, displayName, avatar, description } = author;
   const { post, reason, reply } = feed;
   if (reason && reason["$type"] === BSKY_TYPES.repost) {
     return `Repost by ${displayName} (${handle}), original by  ${post.author.displayName} (${post.author.handle})`;
@@ -146,7 +146,7 @@ serve(async (request: Request) => {
     });
   }
 
-  const { did, handle, displayName, avatar } = await getActor(pathname.replace(/^\//, ""));
+  const { did, handle, displayName, avatar, description } = await getActor(pathname.replace(/^\//, ""));
   if (did === "") {
     return new Response("Unable to resolve handle", {
       headers: { "content-type": "text/plain" },
@@ -197,7 +197,8 @@ serve(async (request: Request) => {
         sanitize(href)
       }" rel="self" type="application/rss+xml" />`,
       tag("link", `https://staging.bsky.app/profile/${did}`),
-      tag("description", `${displayName} (${handle}) in ${service}`),
+      // tag("description", `${displayName} (${handle}) in ${service}`),
+      tag("description", `${description}`),
       tag("image", 
         tag("url", `${avatar}`)
       ),
