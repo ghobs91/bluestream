@@ -95,7 +95,7 @@ function genMainContent(
     // (post.embed && post.embed["$type"] === BSKY_TYPES.view)
     //   ? tag("p", "<br>[quote]<br>", sanitize(post.embed.record!.value?.text))
     //   : "",
-    // "]]>",
+    "]]>",
   ];
 }
 
