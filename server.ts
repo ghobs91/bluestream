@@ -49,9 +49,6 @@ function uriToPostLink(uri: string, usePsky: boolean) {
 function genTitle(author: ProfileViewDetailed, feed: FeedViewPost) {
   const { handle, displayName, avatar, description } = author;
   const { post, reason, reply } = feed;
-  if (post.embed && post.embed["$type"] === BSKY_TYPES.view) {
-    return false;
-  }
   if (reason && reason["$type"] === BSKY_TYPES.repost) {
     return `Repost by ${displayName} (${handle}), original by  ${post.author.displayName} (${post.author.handle})`;
   }
