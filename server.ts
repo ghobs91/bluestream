@@ -70,9 +70,6 @@ function genMainContent(
   usePsky: boolean,
   includeRepost: boolean,
 ) {
-  if (post.embed && post.embed["$type"] === BSKY_TYPES.view) {
-    return;
-  }
   if (usePsky) {
     if (
       includeRepost && post.embed && post.embed["$type"] === BSKY_TYPES.view
@@ -167,8 +164,11 @@ serve(async (request: Request) => {
   const usePsky = searchParams.get("link") === "psky";
   const includeRepost = searchParams.get("repost") === "include";
   // const includeReply = searchParams.get("reply") === 'include';
-  const feeds = authorFeed.data.feed.filter(({ reason }) => {
+  const feeds = authorFeed.data.feed.filter(({ reason, reply }) => {
     if (!includeRepost && reason && reason["$type"] === BSKY_TYPES.repost) {
+      return false;
+    }
+    if (reply) {
       return false;
     }
     // if (!includeReply && !!post.record.reply) return false;
