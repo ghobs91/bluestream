@@ -70,6 +70,9 @@ function genMainContent(
   usePsky: boolean,
   includeRepost: boolean,
 ) {
+  if (post.embed && post.embed["$type"] === BSKY_TYPES.view) {
+    return;
+  }
   if (usePsky) {
     if (
       includeRepost && post.embed && post.embed["$type"] === BSKY_TYPES.view
@@ -91,10 +94,10 @@ function genMainContent(
         `<img src="${image.thumb}"/>`
       ),
     ),
-    // tag("p", sanitize(post.record.text).replace(/\n/, "<br>")),
-    // (post.embed && post.embed["$type"] === BSKY_TYPES.view)
-    //   ? tag("p", "<br>[quote]<br>", sanitize(post.embed.record!.value?.text))
-    //   : "",
+    tag("p", sanitize(post.record.text).replace(/\n/, "<br>")),
+    (post.embed && post.embed["$type"] === BSKY_TYPES.view)
+      ? tag("p", "<br>[quote]<br>", sanitize(post.embed.record!.value?.text))
+      : "",
     "]]>",
   ];
 }
