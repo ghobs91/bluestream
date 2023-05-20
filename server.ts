@@ -49,15 +49,18 @@ function uriToPostLink(uri: string, usePsky: boolean) {
 function genTitle(author: ProfileViewDetailed, feed: FeedViewPost) {
   const { handle, displayName, avatar, description } = author;
   const { post, reason, reply } = feed;
+  if (post.embed && post.embed["$type"] === BSKY_TYPES.view) {
+    return false;
+  }
   if (reason && reason["$type"] === BSKY_TYPES.repost) {
     return `Repost by ${displayName} (${handle}), original by  ${post.author.displayName} (${post.author.handle})`;
   }
   let title = ``;
-  if (reply) {
-    title = `(reply to @${
-      actors[getDidFromUri(reply.parent.uri)].handle
-    })`;
-  }
+  // if (reply) {
+  //   title = `(reply to @${
+  //     actors[getDidFromUri(reply.parent.uri)].handle
+  //   })`;
+  // }
   if (post.embed && post.embed["$type"] === BSKY_TYPES.view) {
     title = `${title}, quoting ${post.embed.record!.author?.handle}`;
   } else if (post.embed && post.embed["$type"] === BSKY_TYPES.recordWithMedia) {
@@ -82,6 +85,9 @@ function genMainContent(
     }
 
     return [];
+  }
+  if (post.embed && post.embed["$type"] === BSKY_TYPES.view) {
+    return false;
   }
   return [
     "<![CDATA[",
@@ -168,6 +174,8 @@ serve(async (request: Request) => {
     if (!includeRepost && reason && reason["$type"] === BSKY_TYPES.repost) {
       return false;
     }
+    // disabling reply posts for now, since you can't see the original post 
+    // it's replying to on nostr
     if (reply) {
       return false;
     }
