@@ -83,9 +83,6 @@ function genMainContent(
 
     return [];
   }
-  if (post.embed && post.embed["$type"] === BSKY_TYPES.view) {
-    return false;
-  }
   return [
     "<![CDATA[",
     tag(
